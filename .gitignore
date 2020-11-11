@@ -9,6 +9,7 @@ build/
 
 # txt
 *.txt
+!CMakeLists.txt
 
 # Cmake
 *.user
