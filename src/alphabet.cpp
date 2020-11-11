@@ -56,6 +56,17 @@ void Alphabet::BuildTree()
     mRoot = Q.pop();
 }
 
+std::string Alphabet::PrintTable()
+{
+    std::stringstream ss;
+    ss << "Char\tASCII\tCount\tCode"<<std::endl<<std::string(40,'-')<<std::endl;
+    for(Letter::Pointer & letterptr: mLetters)
+    {
+        ss << *letterptr;
+    }
+    return ss.str();
+}
+
 
 
 std::string Node::PrintTreeRecursive(std::vector<bool> lines)
@@ -89,37 +100,6 @@ std::string Node::PrintTreeRecursive(std::vector<bool> lines)
     return ss.str();
 }
 
-std::string Node::PrintTableRecursive()
-{
-    std::stringstream ss;
-    if(Leaf)
-    {
-        Letter & l = *Data.lock();
-
-        if((int) l.value > 31){
-            ss<< l.value << " (" << (int) l.value << ")";
-        } else {
-            ss<< "[] (" << (int) l.value << ")";
-        }
-        ss<<"\t";
-        if((int) l.value > -10) ss<<"\t"; // For alignment purposes
-
-        for(const bool & b : l.code)
-        {
-            ss << b;
-        }
-        ss << std::endl;
-    }
-    if(Left)
-    {
-        ss << Left->PrintTableRecursive();
-    }
-    if(Right)
-    {
-        ss << Right->PrintTableRecursive();
-    }
-    return ss.str();
-}
 
 void Node::BuildTableRecursive(std::vector<bool> code)
 {
@@ -139,6 +119,23 @@ void Node::BuildTableRecursive(std::vector<bool> code)
         codechild.push_back(true);
         Right->BuildTableRecursive(codechild);
     }
+}
+
+std::ostream& operator<<(std::ostream& os, const Letter & letter)
+{
+
+    if(letter.value > 31){
+        os<<"["<<letter.value <<"]"<< "\t(" << (int) letter.value << ")";
+    } else {
+        os<< "[�]\t(" << (int) letter.value << ")";
+    }
+    os<<"\t"<< letter.count <<"\t";
+    for(const bool & b : letter.code)
+    {
+        os << b;
+    }
+    os << std::endl;
+    return os;
 }
 
 std::ostream& operator<<(std::ostream & os, const Node & node)

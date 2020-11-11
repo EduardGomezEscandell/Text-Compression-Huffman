@@ -4,6 +4,7 @@ SOURCE_DIR=$MAIN_DIR/src
 EXECUTABLE=huffcode
 
 mkdir $BUILD_DIR
+mkdir "results"
 
 cd $BUILD_DIR
 

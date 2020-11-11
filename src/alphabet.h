@@ -26,6 +26,7 @@ public:
     double freq = 0;
     std::vector<bool> code;
 };
+std::ostream& operator<<(std::ostream& os, const Letter & letter);
 
 class Node{
 public:
@@ -36,7 +37,6 @@ public:
     Node(Letter::Pointer & letter) : Leaf(true) , Data(letter), Weight(letter->freq) {};
 
     void BuildTableRecursive(std::vector<bool> code);
-    std::string PrintTableRecursive();
     std::string PrintTreeRecursive(std::vector<bool> lines);
 
     bool Leaf = false;
@@ -78,7 +78,7 @@ public:
     std::vector<bool> EncodeLetter(const char & c) {return mLetters[(int) c]->code;};
 
     std::string PrintTree() {return mRoot->PrintTreeRecursive({});}
-    std::string PrintTable() {return mRoot->PrintTableRecursive();}
+    std::string PrintTable();
 protected:
     std::array<Letter::Pointer, 256> mLetters;
     Node::Pointer mRoot;
