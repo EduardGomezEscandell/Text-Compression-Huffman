@@ -1,13 +1,19 @@
 # Huffman Coding
 
-Implementing Huffman coding as a recreation project. Still in early stage. 
+Implementing Huffman coding as a recreational project. Still in early stages. Huffman coding is well explained in the [wikipedia page](https://en.wikipedia.org/wiki/Huffman_coding), but as a quick explanation:
+- It is a lossless text compression algorithm.
+- Works by creating an unbalanced binary tree with all characters at the leafs.
+- Each characters' code is its adress in the tree.
+- More frequent characters are higher up in the tree, therefore have shorter codes.
+
+In ASCII each letter takes 8 bits. Once encoded, the most frequent characters take 3 bits while the least ones take 22. Note that most of the latter will be control characters that seldom, if ever, appear. The set of characters can be restricted to make it more efficient. The tree can be constructed on a per-file basis or use generic precompiled values, e.g. the optimal for the english language.
 
 ## Progress report
 So far the program:
 - Reads a file and counts the frequency of each ASCII character
 - Builds a huffmann tree
-- Encodes the text in file 1 and stores it
-- Reads the encoded file and reverts to the original text
+- Encodes a text and stores it
+- Reads the encoded file and recovers the original text
 
 The program doesn't yet:
 - Store the tree in the encoded file or separately.
@@ -31,7 +37,7 @@ or person any right to engage in any activity or to perform any act aimed at the
 destruction of any of the rights and freedoms set forth herein
 \ No newline at end of file
 ```
-As you can see the last character is missing (a dot/full stop). However that is the only error, so the results seem promissing. This text contains 10850 characters or bytes, and gets reduced to 8377 bites, a 77.2% of the original. This could be further improved by excluding characters with zero frequency from the huffmann tree, or applying other natural text compression alorithms beforehand.
+As you can see the last character is missing (a dot/full stop). However that is the only error, so the results seem promissing. This text contains 10850 characters or bytes, and gets reduced to 6281 bites, a 57.9% of the original. This could be further improved by excluding characters with zero frequency from the huffmann tree, or applying other natural text compression alorithms beforehand.
 
 
 ## How to use
