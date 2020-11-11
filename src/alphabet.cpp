@@ -4,7 +4,7 @@ Alphabet::Alphabet()
 {
     for(int i=0; i<256; i++)
     {
-        mLetters[i] = std::make_shared<Letter>((unsigned char)i, i);
+        mLetters[i] = std::make_shared<Letter>((unsigned char)i);
     }
 }
 

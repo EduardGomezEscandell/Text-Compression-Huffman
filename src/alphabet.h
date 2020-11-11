@@ -17,7 +17,7 @@ public:
     typedef std::shared_ptr<Letter> Pointer;
     typedef std::weak_ptr<Letter> Weak;
 
-    Letter(unsigned char v, int c) : count(c), value(v) {};
+    Letter(unsigned char v) : value(v) {};
     Letter(const Letter & rhs) : count(rhs.count), value(rhs.value), freq(rhs.freq){};
 
     void operator+=(const int & rhs){count+=rhs;};
