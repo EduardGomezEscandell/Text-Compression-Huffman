@@ -17,13 +17,14 @@ public:
     typedef std::shared_ptr<Letter> Pointer;
     typedef std::weak_ptr<Letter> Weak;
 
-    Letter(char v, int c) : count(c), value(v) {};
+    Letter(unsigned char v, int c) : count(c), value(v) {};
     Letter(const Letter & rhs) : count(rhs.count), value(rhs.value), freq(rhs.freq){};
 
     void operator+=(const int & rhs){count+=rhs;};
     int count=0;
-    char value = '\0';
+    unsigned char value = '\0';
     double freq = 0;
+    std::vector<bool> code;
 };
 
 class Node{
@@ -34,8 +35,9 @@ public:
     Node(Node::Pointer & L, Node::Pointer & R) : Left(L) , Right(R), Weight(L->Weight + R->Weight) {};
     Node(Letter::Pointer & letter) : Leaf(true) , Data(letter), Weight(letter->freq) {};
 
-    std::string StrRecursive(std::vector<bool> lines);
-    std::string TableRecursive(std::string code);
+    void BuildTableRecursive(std::vector<bool> code);
+    std::string PrintTableRecursive();
+    std::string PrintTreeRecursive(std::vector<bool> lines);
 
     bool Leaf = false;
     double Weight;
@@ -64,11 +66,19 @@ protected:
 class Alphabet
 {
 public:
+    typedef std::shared_ptr<Alphabet> Pointer;
     Alphabet();
+
     void ObtainFrequencies(std::string filename);
     void BuildTree();
-    std::string Tree() {return mRoot->StrRecursive({});}
-    std::string Table() {return mRoot->TableRecursive("");}
+    void BuildTable() {mRoot->BuildTableRecursive({});}
+
+    Node::Pointer & GetRoot() {return mRoot;}
+
+    std::vector<bool> EncodeLetter(const char & c) {return mLetters[(int) c]->code;};
+
+    std::string PrintTree() {return mRoot->PrintTreeRecursive({});}
+    std::string PrintTable() {return mRoot->PrintTableRecursive();}
 protected:
     std::array<Letter::Pointer, 256> mLetters;
     Node::Pointer mRoot;

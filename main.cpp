@@ -1,8 +1,7 @@
 #include <iostream>
 
 #include "alphabet.h"
-
-using namespace std;
+#include "encode_file.h"
 
 void print_help();
 
@@ -18,13 +17,15 @@ int main(int argc, char ** argv)
     Alphabet alph;
     alph.ObtainFrequencies(infile_name);
     alph.BuildTree();
+    alph.BuildTable();
 
-    std::ofstream f;
-    f.open(outfile_name);
-    f << alph.Table();
-    f.close();
+    std::cout << alph.PrintTable();
 
-    std::cout << alph.Tree();
+    FileEncoder e(alph);
+    e.Encode(infile_name, outfile_name);
+
+    FileDecoder d(alph);
+    d.Decode(outfile_name, "final_result.txt");
 
     return 0;
 }

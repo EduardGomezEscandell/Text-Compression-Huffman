@@ -5,4 +5,9 @@ project(huffcode LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_executable(huffcode main.cpp alphabet.cpp)
+add_executable(huffcode
+        main.cpp
+        alphabet.cpp
+        encode_file.cpp
+        bit_level.h
+        )

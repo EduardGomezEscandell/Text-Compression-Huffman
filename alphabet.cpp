@@ -4,7 +4,7 @@ Alphabet::Alphabet()
 {
     for(int i=0; i<256; i++)
     {
-        mLetters[i] = std::make_shared<Letter>(char(i), i);
+        mLetters[i] = std::make_shared<Letter>((unsigned char)i, i);
     }
 }
 
@@ -21,13 +21,13 @@ void Alphabet::ObtainFrequencies(std::string filename)
     while(getline(f, line))
     {
         int col = 1;
-        for(char & c: line)
+        for(unsigned char c: line)
         {
-            if(int(c) > 255 || int(c) < 0)
+            if(uint8_t(c) > 255 || uint8_t(c) < 0)
             {
-                std::cerr<<"Only ascii characters allowed! Character "<< c <<" ("<<(int)c<<") will be ignored. See R"<<row<<"C"<<col<<std::endl;
+                std::cerr<<"Only ascii characters allowed! Character "<< c <<" ("<<(uint8_t)c<<") will be ignored. See R"<<row<<"C"<<col<<std::endl;
             } else {
-                *mLetters.at((int)c)+=1;
+                *mLetters.at((uint8_t)c)+=1;
                 totalcount++;
             }
             col++;
@@ -58,7 +58,7 @@ void Alphabet::BuildTree()
 
 
 
-std::string Node::StrRecursive(std::vector<bool> lines)
+std::string Node::PrintTreeRecursive(std::vector<bool> lines)
 {
     std::stringstream ss;
     ss << *this;
@@ -72,7 +72,7 @@ std::string Node::StrRecursive(std::vector<bool> lines)
         std::string connector = Right ? "   ├─" : "   └─";
         auto thislines = lines;
         thislines.push_back(true);
-        ss << connector << Left->StrRecursive(thislines);
+        ss << connector << Left->PrintTreeRecursive(thislines);
         children = true;
     }
     if(Right)
@@ -83,35 +83,62 @@ std::string Node::StrRecursive(std::vector<bool> lines)
         }
         auto thislines = lines;
         thislines.push_back(false);
-        ss << "   └─" << Right->StrRecursive(thislines);
+        ss << "   └─" << Right->PrintTreeRecursive(thislines);
         children = true;
     }
     return ss.str();
 }
 
-std::string Node::TableRecursive(std::string code)
+std::string Node::PrintTableRecursive()
 {
     std::stringstream ss;
     if(Leaf)
     {
-        char c = Data.lock()->value;
-        if((int)c < 31)
-        {
-            ss << code << " : " << "CNTRL ("<<(int) c <<")" << std::endl;
+        Letter & l = *Data.lock();
+
+        if((int) l.value > 31){
+            ss<< l.value << " (" << (int) l.value << ")";
         } else {
-            ss << code << " :   " << c << "   ("<<(int) c <<")" << std::endl;
+            ss<< "[] (" << (int) l.value << ")";
         }
-        return ss.str();
+        ss<<"\t";
+        if((int) l.value > -10) ss<<"\t"; // For alignment purposes
+
+        for(const bool & b : l.code)
+        {
+            ss << b;
+        }
+        ss << std::endl;
     }
     if(Left)
     {
-        ss << Left->TableRecursive(code + '0');
+        ss << Left->PrintTableRecursive();
     }
     if(Right)
     {
-        ss << Right->TableRecursive(code + '1');
+        ss << Right->PrintTableRecursive();
     }
     return ss.str();
+}
+
+void Node::BuildTableRecursive(std::vector<bool> code)
+{
+    if(Leaf)
+    {
+        Data.lock()->code = std::vector<bool>(code);
+    }
+    if(Left)
+    {
+        std::vector<bool> codechild = code;
+        codechild.push_back(false);
+        Left->BuildTableRecursive(codechild);
+    }
+    if(Right)
+    {
+        std::vector<bool> codechild = code;
+        codechild.push_back(true);
+        Right->BuildTableRecursive(codechild);
+    }
 }
 
 std::ostream& operator<<(std::ostream & os, const Node & node)
@@ -119,9 +146,9 @@ std::ostream& operator<<(std::ostream & os, const Node & node)
     if(node.Leaf)
     {
         Letter::Pointer data = node.Data.lock();
-        char ch = data->value>31 ? data->value : '*';
+        unsigned char ch = data->value>31 ? data->value : '*';
 
-        os << "c:" << ch <<"("<< (int)ch<<")"<<" f:"<<data->freq;
+        os << "c:" << ch <<"("<< (uint8_t)ch<<")"<<" f:"<<data->freq;
 
 
     } else {
