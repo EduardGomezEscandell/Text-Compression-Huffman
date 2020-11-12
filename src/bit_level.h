@@ -1,6 +1,9 @@
 #ifndef BIT_LEVEL_H
 #define BIT_LEVEL_H
 
+#define WORDSIZE 8
+
+#include <iostream>
 #include <fstream>
 #include <stdio.h>
 #include <exception>
@@ -15,24 +18,6 @@ public:
 };
 
 
-namespace bitstream {
-
-inline uint8_t bit2byte(int n)
-{
-    switch (n) {
-    case 0: return 1;
-    case 1: return 2;
-    case 2: return 4;
-    case 3: return 8;
-    case 4: return 16;
-    case 5: return 32;
-    case 6: return 64;
-    case 7: return 128;
-    default: return 0;
-    }
-}
-
-
 class writer
 {
 public:
@@ -41,6 +26,12 @@ public:
         if(!f.is_open()) throw "Could not open output file";
     };
 
+    ~writer()
+    {
+        if(bitcount != 0)
+        std::cerr<<"[WARNING] There were unprinted bits in the buffer. Use bitsream::writer::flush() to print them before destroying the writer." <<std::endl;
+    }
+
     void close()
     {
         f.close();
@@ -48,24 +39,31 @@ public:
 
     void push(const bit b)
     {
-        bitsleft--;
-        if(b)
-        {
-            uint8_t mask = bit2byte(bitsleft);
-            curr_buffer |= mask; // flipping bit
-        }
-        if(!bitsleft)
-        {
-            f << (unsigned char) curr_buffer;
-            curr_buffer = 0;
-            bitsleft = wordsize;
+        buffer = buffer << 1;
+        buffer |= b;
+        bitcount++;
+        if(bitcount == WORDSIZE) flush();
+    }
+
+    void eof()
+    {
+        // Pushing zeros until it flushes
+        while (bitcount > 0) {
+            push(0);
         }
     }
-    const int wordsize = 8;
+
 protected:
+    inline void flush()
+    {
+        f << buffer;
+        buffer = 0;
+        bitcount = 0;
+    }
+
     std::ofstream f;
-    int bitsleft = wordsize;
-    uint8_t curr_buffer = 0;
+    short bitcount = 0;
+    uint8_t buffer = 0;
 };
 
 
@@ -84,23 +82,24 @@ public:
 
     bit pull()
     {
-        if(!bitsleft)
+        if(mask==0)
         {
+            if(eof) throw EOFexception();
             char c;
-            if(!f.get(c)) throw EOFexception();
-            curr_buffer = (uint8_t) c;
-            bitsleft = wordsize;
+            if(!f.get(c)) eof=true;
+            buffer = (uint8_t) c;
+            mask = 1 << (WORDSIZE-1);
         }
-        bitsleft--;
-        uint8_t mask = bit2byte(bitsleft);
-        bit b = (mask & curr_buffer) != 0;
+        bit b = (mask & buffer) != 0;  // obtaining bit
+        mask = mask >> 1;                   // Shifting right
         return b;
     }
     const int wordsize = 8;
 protected:
+    bool eof=false;
     std::ifstream f;
-    int bitsleft = 0;
-    uint8_t curr_buffer = 0;
+    uint8_t mask = 0;
+    uint8_t buffer = 0;
 };
 
 }

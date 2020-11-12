@@ -14,6 +14,7 @@ public:
     FileEncoder(Alphabet & rAlphabet) : mpAlphabet(std::make_shared<Alphabet>(rAlphabet)) {};
     void Encode(const std::string infile, const std::string outfile) const;
 protected:
+    void encode_and_print(bitstream::writer & writer, const unsigned char c) const;
     Alphabet::Pointer mpAlphabet;
 };
 

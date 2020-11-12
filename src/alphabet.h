@@ -75,7 +75,7 @@ public:
 
     Node::Pointer & GetRoot() {return mRoot;}
 
-    std::vector<bool> EncodeLetter(const char & c) {return mLetters[(int) c]->code;};
+    std::vector<bool> EncodeLetter(const char & c) const {return mLetters[(int) c]->code;};
 
     std::string PrintTree() {return mRoot->PrintTreeRecursive({});}
     std::string PrintTable();

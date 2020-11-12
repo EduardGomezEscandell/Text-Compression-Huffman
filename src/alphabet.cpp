@@ -143,9 +143,9 @@ std::ostream& operator<<(std::ostream & os, const Node & node)
     if(node.Leaf)
     {
         Letter::Pointer data = node.Data.lock();
-        unsigned char ch = data->value>31 ? data->value : '*';
+        const unsigned char ch = data->value>31 ? data->value : '*';
 
-        os << "c:" << ch <<"("<< (uint8_t)ch<<")"<<" f:"<<data->freq;
+        os << "c:" << ch <<"("<< (int)ch<<")"<<" f:"<<data->freq;
 
 
     } else {
