@@ -12,7 +12,6 @@ void FileEncoder::encode_and_print(bitstream::writer & writer, const unsigned ch
     }
 }
 
-
 void FileEncoder::Encode(const std::string infile, const std::string outfile) const
 {
     std::ifstream fin;
@@ -20,6 +19,19 @@ void FileEncoder::Encode(const std::string infile, const std::string outfile) co
     if(fin.bad()) throw "Could not open input file";
 
     bitstream::writer writer(outfile);
+
+    /*
+     * Encoding tree
+     */
+    std::vector<Node::Pointer> path;
+    Node::Pointer cursor = mpAlphabet->GetRoot();
+
+
+
+    /*
+     *  Encoding mesage
+     */
+
 
     std::string line;
 
