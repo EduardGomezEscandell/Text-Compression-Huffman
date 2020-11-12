@@ -58,7 +58,7 @@ std::ostream& operator<<(std::ostream& os, const Letter & letter)
     if(letter.value > 31){
         os<<"["<<letter.value <<"]"<< "\t(" << (int) letter.value << ")";
     } else {
-        os<< "[�]\t(" << (int) letter.value << ")";
+        os<< "[�]\t(" << (int) letter.value << ")"; // Not an encoding error, � is printed to avoid printing control characters
     }
     os<<"\t"<< letter.count <<"\t";
     for(const bool & b : letter.code)
@@ -84,4 +84,47 @@ std::ostream& operator<<(std::ostream & os, const Node & node)
     }
     os<<std::endl;
     return os;
+}
+
+void Node::EncodeRecursive(bitstream::writer & writer) const
+{
+    writer.push(Leaf);
+    if(Leaf)
+    {
+        writer.push(Data.lock()->value);
+        return;
+    }
+    writer.push(Left != nullptr);
+    writer.push(Right != nullptr);
+    if(Left)
+    {
+        Left->EncodeRecursive(writer);
+    }
+    if(Right)
+    {
+        Right->EncodeRecursive(writer);
+    }
+}
+
+void Node::DecodeRecursive(bitstream::reader & reader, std::array<Letter::Pointer, 256> & letters)
+{
+    Leaf = reader.pull();
+    if(Leaf)
+    {
+        const unsigned char letter = reader.pullbyte();
+        Data = letters[letter];
+        return;
+    }
+    bool existsL = reader.pull();
+    bool existsR = reader.pull();
+    if(existsL)
+    {
+        Left = std::make_shared<Node>();
+        Left->DecodeRecursive(reader, letters);
+    }
+    if(existsR)
+    {
+        Right = std::make_shared<Node>();
+        Right->DecodeRecursive(reader, letters);
+    }
 }

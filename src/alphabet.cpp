@@ -90,3 +90,9 @@ MyQueue::MyQueue(std::array<Letter::Pointer, 256> & letters)
         Q.insert(std::make_shared<Node>(letter_ptr));
     }
 }
+
+void Alphabet::Decode(bitstream::reader & reader)
+{
+    mRoot = std::make_shared<Node>();
+    mRoot->DecodeRecursive(reader, mLetters);
+}

@@ -6,6 +6,7 @@
 #include <vector>
 #include <set>
 #include <memory>
+
 #include "bit_level.h"
 
 class Letter{
@@ -29,6 +30,7 @@ public:
     typedef std::shared_ptr<Node> Pointer;
     typedef std::weak_ptr<Node> Weak;
 
+    Node() : Weight(0) {}
     Node(Node::Pointer & L, Node::Pointer & R) : Left(L) , Right(R) {Weight = L->Weight + R->Weight;}
     Node(Letter::Pointer & letter) : Leaf(true) , Data(letter) {Weight = letter->count;}
 
@@ -38,7 +40,8 @@ public:
     bool Leaf = false;
     double Weight;
 
-    void EncodeNodeRecursive() const;
+    void EncodeRecursive(bitstream::writer & writer) const;
+    void DecodeRecursive(bitstream::reader & reader, std::array<Letter::Pointer, 256> & letters);
 
     Node::Pointer Left = nullptr;
     Node::Pointer Right = nullptr;

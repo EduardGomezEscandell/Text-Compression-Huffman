@@ -22,8 +22,9 @@ protected:
 class FileDecoder
 {
 public:
-    FileDecoder(Alphabet::Pointer & pAlphabet) : mpAlphabet(pAlphabet) {};
-    FileDecoder(Alphabet & rAlphabet) : mpAlphabet(std::make_shared<Alphabet>(rAlphabet)) {};
+    FileDecoder() {mpAlphabet = std::make_shared<Alphabet>();}
+    FileDecoder(Alphabet::Pointer & pAlphabet) : mpAlphabet(pAlphabet) {}
+    FileDecoder(Alphabet & rAlphabet) : mpAlphabet(std::make_shared<Alphabet>(rAlphabet)) {}
     void Decode(const std::string infile, const std::string outfile) const;
 protected:
     Alphabet::Pointer mpAlphabet;

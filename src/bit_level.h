@@ -11,13 +11,6 @@
 typedef bool bit;
 
 
-class EOFexception : std::exception
-{
-public:
-    const char* what() const throw() {return "Reached end of file";}
-};
-
-
 namespace  bitstream {
 
 class writer
@@ -45,13 +38,28 @@ public:
         buffer |= b;
         bitcount++;
         if(bitcount == WORDSIZE) flush();
+
+        bufferbin += b ? '1' : '0';
+    }
+
+    void push(const unsigned char ch)
+    {
+        // TODO Replace with something more efficient
+        uint8_t mask = 1 << (WORDSIZE-1);
+        while(mask)
+        {
+            bit b = ch & mask;
+            push(b);
+            mask = mask >> 1;
+        }
+
     }
 
     void eof()
     {
         // Pushing zeros until it flushes
         while (bitcount > 0) {
-            push(0);
+            push(false);
         }
     }
 
@@ -61,7 +69,10 @@ protected:
         f << buffer;
         buffer = 0;
         bitcount = 0;
+        bufferbin = "";
     }
+
+    std::string bufferbin = "";
 
     std::ofstream f;
     short bitcount = 0;
@@ -73,7 +84,7 @@ class reader
 {
 public:
     reader(const std::string & infile) {
-        f.open(infile);
+        f.open(infile, std::ifstream::binary);
         if(!f.is_open()) throw "Could not open output file";
     };
 
@@ -84,23 +95,50 @@ public:
 
     bit pull()
     {
-        if(mask==0)
+
+        if(bitcount==WORDSIZE)
         {
-            if(eof) throw EOFexception();
+            if(eof) throw "Reached end of file";
             char c;
             if(!f.get(c)) eof=true;
             buffer = (uint8_t) c;
-            mask = 1 << (WORDSIZE-1);
+            bitcount = 0;
+
+            bufferbin = "";
+            uint8_t m = 1 << (WORDSIZE-1);
+            while(m)
+            {
+                bufferbin += buffer & m ? '1' : '0';
+                m = m >> 1;
+            }
         }
-        bit b = (mask & buffer) != 0;  // obtaining bit
-        mask = mask >> 1;                   // Shifting right
+
+        uint8_t mask = 1 << (WORDSIZE-1-bitcount);
+        bit b = (mask & buffer);  // obtaining bit
+        bitcount++;
         return b;
     }
+
+    uint8_t pullbyte()
+    {
+        // TODO: Replace with something more efficient
+        uint8_t byte = 0;
+        for(int i=0; i<WORDSIZE; i++)
+        {
+            byte = byte << 1;
+            byte |= pull();
+        }
+        return byte;
+    }
+
     const int wordsize = 8;
 protected:
+    // delete:
+    std::string bufferbin;
+
     bool eof=false;
     std::ifstream f;
-    uint8_t mask = 0;
+    short bitcount = WORDSIZE;
     uint8_t buffer = 0;
 };
 

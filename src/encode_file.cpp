@@ -23,10 +23,8 @@ void FileEncoder::Encode(const std::string infile, const std::string outfile) co
     /*
      * Encoding tree
      */
-    std::vector<Node::Pointer> path;
-    Node::Pointer cursor = mpAlphabet->GetRoot();
 
-
+    mpAlphabet->GetRoot()->EncodeRecursive(writer);
 
     /*
      *  Encoding mesage
@@ -61,6 +59,8 @@ void FileDecoder::Decode(const std::string infile, const std::string outfile) co
     if(fout.bad()) throw "Could not open input file";
 
     bitstream::reader reader(infile);
+
+    mpAlphabet->Decode(reader);
 
     Node::Weak currnode = mpAlphabet->GetRoot();
 
