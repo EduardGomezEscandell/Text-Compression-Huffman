@@ -22,10 +22,10 @@ int main(int argc, char ** argv)
     std::cout << alph.PrintTable();
 
     FileEncoder e(alph);
-    e.Encode(infile_name, "results/encoded.txt");
+    e.Encode(infile_name, "results/encoded.huf");
 
     FileDecoder d(alph);
-    d.Decode("results/encoded.txt", outfile_name);
+    d.Decode("results/encoded.huf", outfile_name);
 
     return 0;
 }
