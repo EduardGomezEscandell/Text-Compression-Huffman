@@ -31,7 +31,7 @@ public:
     ~writer()
     {
         if(bitcount != 0)
-        std::cerr<<"[WARNING] There were unprinted bits in the buffer. Use bitsream::writer::flush() to print them before destroying the writer." <<std::endl;
+        std::cerr<<"[WARNING] There were unprinted bits in the buffer. Use bitsream::writer::eof() to print them before destroying the writer." <<std::endl;
     }
 
     void close()
