@@ -38,8 +38,6 @@ public:
         buffer |= b;
         bitcount++;
         if(bitcount == WORDSIZE) flush();
-
-        bufferbin += b ? '1' : '0';
     }
 
     void push(const unsigned char ch)
@@ -69,11 +67,7 @@ protected:
         f << buffer;
         buffer = 0;
         bitcount = 0;
-        bufferbin = "";
     }
-
-    std::string bufferbin = "";
-
     std::ofstream f;
     short bitcount = 0;
     uint8_t buffer = 0;
@@ -103,14 +97,6 @@ public:
             if(!f.get(c)) eof=true;
             buffer = (uint8_t) c;
             bitcount = 0;
-
-            bufferbin = "";
-            uint8_t m = 1 << (WORDSIZE-1);
-            while(m)
-            {
-                bufferbin += buffer & m ? '1' : '0';
-                m = m >> 1;
-            }
         }
 
         uint8_t mask = 1 << (WORDSIZE-1-bitcount);
@@ -133,9 +119,6 @@ public:
 
     const int wordsize = 8;
 protected:
-    // delete:
-    std::string bufferbin;
-
     bool eof=false;
     std::ifstream f;
     short bitcount = WORDSIZE;
