@@ -1,12 +1,12 @@
 # Huffman Coding
 
-Implementing Huffman coding as a recreational project. Still in early stages. Huffman coding is well explained in the [wikipedia page](https://en.wikipedia.org/wiki/Huffman_coding), but as a quick explanation:
+Implementation of Huffman coding as a recreational project. Huffman coding is well explained in the [wikipedia page](https://en.wikipedia.org/wiki/Huffman_coding), but as a quick explanation:
 - It is a lossless text compression algorithm.
 - Works by creating an unbalanced binary tree with all characters at the leafs.
 - Each characters' code is its adress in the tree.
 - More frequent characters are higher up in the tree, therefore have shorter codes.
 
-In ASCII each letter takes 8 bits. Once encoded, the most frequent characters take 3 bits while the least ones take 27. Note that most of the latter will be control characters that seldom, if ever, appear. The set of characters can be restricted to make it more efficient. The tree can be constructed on a per-file basis or use generic precompiled values, e.g. the optimal for the english language.
+In ASCII each letter takes 8 bits. Once encoded, the most frequent characters take 4 bits while the least ones take 27. Note that most of the latter will be control characters that seldom, if ever, appear. The set of characters can be restricted to make it more efficient. The tree can be constructed on a per-file basis or use generic precompiled values, e.g. the optimal for the english language.
 
 ## Progress report
 So far the program:
@@ -19,21 +19,29 @@ The program doesn't yet:
 - Encode multiple files with the same tree.
 - Use a snippet of text to build the tree instead of the whole text.
 - Allow for non-ASCII characters.
-
-## Current bugs
-For certain files a SegFault is thrown. Still investigating the source of the error.
+- Store trees separately.
 
 ## Results
-I ran the Universal Declaration of Human Rights as a sample text. This text contains 10850 characters or bytes, and gets reduced to 6281 bites, a 57.9% of the original. If we want to store the tree with it (which we need to decode), size climbs up to 6668 bites, or a 61.5% reduction. This could be further improved by excluding characters with zero frequency from the huffmann tree, or applying other natural text compression alorithms beforehand.
+Here is the result of running the test:
+```
+~/HuffmanCoding$ cd test
+~/HuffmanCoding/test$ sh test.sh 
+Successfully encoded ~/HuffmanCoding/test/humanrights.txt
+Successfully decoded ~/HuffmanCoding/test/humanrights_copy.huf
+
+Difference between original and encoded-decoded (blank if none, ok):
+
+The original weights:   12557 bytes
+The compressed weights:  7274 bytes
+This represents a 42% reduction
+```
+We can see how there is no difference between the original and the reconstructed version. We also see that the compressed version wheights a 58% of the original for this case in particular. Due to the overhead of storing the tree, efficiency improves for larger files.
+
 
 ## How to use
 First clone the repository and, on linux, run `sh build.sh`. On windows you're on your own but it is a small project so it shouldn't be difficult.
 
-A symbolic link will be created in the repository directory, as well as a results directory. You can run a command such as: `huffman file1.txt file2.txt`. The first file will be your input file. The second one is the output. There will also appear a  `results/encoded.txt`, with the encoded file. The program will perform the following process:
-```
-file1.txt --ENCODE--> results/encoded.txt --DECODE--> file2.txt
-```
-You can compare the loss of information by running `diff file1.txt file2.txt`. There shouldn't be any difference. You can also see the size of `encoded.txt` to see the reduction of size. If you open it, you will see that it's just a pile of apparently nonsensical characters.
+A symbolic link will be created in the repository directory, as well as a results directory. You can run a command: `huffman -h` to see how to use it. It is quite simple. Once you get it running, you can compare the loss of information by running `diff original.txt decoded.txt`. There shouldn't be any difference. You can also see the size of `encoded.huf` to see the reduction in size. If you open it, you will see that it's just a pile of apparently nonsensical characters.
 
 ## How is data encoded?
 A huffman tree is generated. This is a binary tree with letters at the edges. 
