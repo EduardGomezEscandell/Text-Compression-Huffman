@@ -2,38 +2,64 @@
 
 #include "alphabet.h"
 #include "encode_file.h"
+#include "input_parsing.h"
 
-void print_help();
+#include <string>
+
+std::string data2results(const std::string & data, const std::string extension);
 
 int main(int argc, char ** argv)
 {
-    if(argc != 3){
-        print_help();
+    WorkQueue::Pointer wq;
+    try {
+        wq = WorkQueue::New(argc, argv);
+    } catch (...) {
         return 1;
     }
-    std::string infile_name = argv[1];
-    std::string outfile_name = argv[2];
+
+    std::string infile_name;
 
     // Building tree
-    Alphabet alph;
-    alph.ObtainFrequencies(infile_name);
-    alph.BuildTree();
-    alph.BuildTable();
+    while(wq->NextEncoding(infile_name))
+    {
+        try {
+            std::string outfile_name = data2results(infile_name,".huf");
+            Alphabet alph;
+            alph.ObtainFrequencies(infile_name);
+            alph.BuildTree();
+            alph.BuildTable();
 
-    // Encoding file with tree
-    FileEncoder e(alph);
-    e.Encode(infile_name, "results/encoded.huf");
+            FileEncoder e(alph);
+            e.Encode(infile_name, outfile_name);
+            std::cout << "Succesfully encoded " << infile_name << std::endl;
+        } catch (...) {
+            std::cerr << "Failed to encode "<< infile_name << std::endl;
+        }
+    }
 
-    // Recovering tree from file, and re-translating
-    FileDecoder d;
-    d.Decode("results/encoded.huf", outfile_name);
+    while(wq->NextDecoding(infile_name))
+    {
+        try {
+            std::string outfile_name = data2results(infile_name,".txt");
+            FileDecoder d;
+            d.Decode(infile_name, outfile_name);
+            std::cout << "Succesfully decoded " << infile_name << std::endl;
+        } catch (...) {
+            std::cerr << "Failed to decode "<< infile_name << std::endl;
+        }
+    }
 
     return 0;
 }
 
-
-void print_help()
+std::string data2results(const std::string & data, const std::string extension)
 {
-    std::cerr << "Wrong number of arguments. It should be two"<<std::endl;
-    std::cerr << "huffcode infile outfile"<<std::endl;
+    std::string ret = data;
+    size_t newlength = ret.find_last_of('.');
+    ret.resize(newlength);
+    ret += extension;
+
+    return ret;
 }
+
+

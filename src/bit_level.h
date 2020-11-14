@@ -8,6 +8,15 @@
 #include <stdio.h>
 #include <exception>
 
+#define OPEN(f, filename) do{                                                       \
+    f.open(filename);                                                               \
+    if(!f.is_open())                                                                \
+    {                                                                               \
+        std::cerr << "File " << filename <<" could not be accessed."<<std::endl;    \
+        throw "Could not open input file";                                          \
+    }                                                                               \
+    } while(false)
+
 typedef bool bit;
 
 
@@ -17,8 +26,7 @@ class writer
 {
 public:
     writer(const std::string & outfile) {
-        f.open(outfile);
-        if(!f.is_open()) throw "Could not open output file";
+        OPEN(f,outfile);
     };
 
     ~writer()
@@ -78,8 +86,7 @@ class reader
 {
 public:
     reader(const std::string & infile) {
-        f.open(infile, std::ifstream::binary);
-        if(!f.is_open()) throw "Could not open output file";
+        OPEN(f,infile);
     };
 
     void close()
@@ -92,7 +99,11 @@ public:
 
         if(bitcount==WORDSIZE)
         {
-            if(eof) throw "Reached end of file";
+            if(eof)
+            {
+                std::cerr<<"Reached end of file at an unexpeced point. Check you are decoding a valid file or that the file might be damaged."<<std::endl;
+                throw "Reached end of file";
+            }
             char c;
             if(!f.get(c)) eof=true;
             buffer = (uint8_t) c;

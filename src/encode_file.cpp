@@ -15,8 +15,7 @@ void FileEncoder::encode_and_print(bitstream::writer & writer, const unsigned ch
 void FileEncoder::Encode(const std::string infile, const std::string outfile) const
 {
     std::ifstream fin;
-    fin.open(infile);
-    if(fin.bad()) throw "Could not open input file";
+    OPEN(fin,infile);
 
     bitstream::writer writer(outfile);
 
@@ -55,9 +54,7 @@ void FileEncoder::Encode(const std::string infile, const std::string outfile) co
 void FileDecoder::Decode(const std::string infile, const std::string outfile) const
 {
     std::ofstream fout;
-    fout.open(outfile);
-    if(fout.bad()) throw "Could not open input file";
-
+    OPEN(fout,outfile);
     bitstream::reader reader(infile);
 
     mpAlphabet->Decode(reader);

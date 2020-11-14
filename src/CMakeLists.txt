@@ -10,5 +10,6 @@ add_executable(huffcode
         node.cpp
         alphabet.cpp
         encode_file.cpp
+        input_parsing.cpp
         bit_level.h
         )
