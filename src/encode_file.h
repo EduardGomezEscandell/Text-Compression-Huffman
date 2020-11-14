@@ -25,8 +25,9 @@ public:
     FileDecoder() {mpAlphabet = std::make_shared<Alphabet>();}
     FileDecoder(Alphabet::Pointer & pAlphabet) : mpAlphabet(pAlphabet) {}
     FileDecoder(Alphabet & rAlphabet) : mpAlphabet(std::make_shared<Alphabet>(rAlphabet)) {}
-    void Decode(const std::string infile, const std::string outfile) const;
+    std::string Decode(const std::string & infile, const std::string & outfile) const;
 protected:
+    unsigned char decode_next_char(bitstream::reader & reader) const;
     Alphabet::Pointer mpAlphabet;
 };
 

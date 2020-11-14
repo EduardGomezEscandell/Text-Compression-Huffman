@@ -5,10 +5,10 @@
 TESTS_DIR=$PWD
 
 # Dependencies
-TESTFILE="$TESTS_DIR/humanrights.txt"
-ENCODED="$TESTS_DIR/humanrights.huf"
-NEWENCODED="$TESTS_DIR/humanrights_copy.huf"
-DECODED="$TESTS_DIR/humanrights_copy.txt"
+TESTFILE="$TESTS_DIR/testdata/humanrights.txt"
+ENCODED="$TESTS_DIR/testdata/humanrights.huf"
+NEWENCODED="$TESTS_DIR/humanrights.huf"
+DECODED="$TESTS_DIR/humanrights.txt"
 
 # Running program
 cd ..
@@ -32,5 +32,7 @@ echo "The compressed weights:  $CWEIGHT bytes"
 echo "This represents a $(( (( (($OWEIGHT-$CWEIGHT)) * 100))/$OWEIGHT))% reduction"
 
 # Removing test files
+echo
+echo "Results files removed"
 rm -f "$NEWENCODED"
 rm -f "$DECODED"

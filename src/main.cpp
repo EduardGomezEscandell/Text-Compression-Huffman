@@ -51,12 +51,12 @@ int main(int argc, char ** argv)
 
     while(wq->NextDecoding(infile_name))
     {
-        std::string tempfile_name = ChangeExtension(infile_name,".txt~");
-        std::string outfile_name = ChangeExtension(infile_name,".txt");
+        std::string tempfile_name = ChangeExtension(infile_name,".tmp~");
+        std::string outfile_name = "placeholder.txt";
         try
         {
             FileDecoder d;
-            d.Decode(infile_name, tempfile_name);
+            outfile_name = d.Decode(infile_name, tempfile_name);
             std::cout << "Successfully decoded " << infile_name << std::endl;
             std::rename(tempfile_name.c_str(), outfile_name.c_str());
         }
