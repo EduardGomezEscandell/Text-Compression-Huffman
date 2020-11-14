@@ -6,7 +6,7 @@
 
 #include <string>
 
-std::string data2results(const std::string & data, const std::string extension);
+std::string ChangeExtension(const std::string & data, const std::string extension);
 
 int main(int argc, char ** argv)
 {
@@ -19,46 +19,63 @@ int main(int argc, char ** argv)
 
     std::string infile_name;
 
-    // Building tree
+    /*
+     *              ENCODING
+     */
     while(wq->NextEncoding(infile_name))
     {
-        try {
-            std::string outfile_name = data2results(infile_name,".huf");
+        std::string tempfile_name = ChangeExtension(infile_name,".huf~");
+        std::string outfile_name = ChangeExtension(infile_name,".huf");
+        try
+        {
             Alphabet alph;
             alph.ObtainFrequencies(infile_name);
             alph.BuildTree();
             alph.BuildTable();
 
             FileEncoder e(alph);
-            e.Encode(infile_name, outfile_name);
+            e.Encode(infile_name, tempfile_name);
             std::cout << "Successfully encoded " << infile_name << std::endl;
-        } catch (...) {
+            std::rename(tempfile_name.c_str(), outfile_name.c_str());
+        }
+        catch (...)
+        {
             std::cerr << "Failed to encode "<< infile_name << std::endl;
+            std::remove(tempfile_name.c_str());
         }
     }
 
+    /*
+     *              DECODING
+     */
+
     while(wq->NextDecoding(infile_name))
     {
-        try {
-            std::string outfile_name = data2results(infile_name,".txt");
+        std::string tempfile_name = ChangeExtension(infile_name,".txt~");
+        std::string outfile_name = ChangeExtension(infile_name,".txt");
+        try
+        {
             FileDecoder d;
-            d.Decode(infile_name, outfile_name);
+            d.Decode(infile_name, tempfile_name);
             std::cout << "Successfully decoded " << infile_name << std::endl;
-        } catch (...) {
+            std::rename(tempfile_name.c_str(), outfile_name.c_str());
+        }
+        catch (...)
+        {
             std::cerr << "Failed to decode "<< infile_name << std::endl;
+            std::remove(tempfile_name.c_str());
         }
     }
 
     return 0;
 }
 
-std::string data2results(const std::string & data, const std::string extension)
+std::string ChangeExtension(const std::string & data, const std::string extension)
 {
     std::string ret = data;
     size_t newlength = ret.find_last_of('.');
     ret.resize(newlength);
     ret += extension;
-
     return ret;
 }
 
