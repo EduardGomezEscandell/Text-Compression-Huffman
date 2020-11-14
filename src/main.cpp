@@ -31,7 +31,7 @@ int main(int argc, char ** argv)
 
             FileEncoder e(alph);
             e.Encode(infile_name, outfile_name);
-            std::cout << "Succesfully encoded " << infile_name << std::endl;
+            std::cout << "Successfully encoded " << infile_name << std::endl;
         } catch (...) {
             std::cerr << "Failed to encode "<< infile_name << std::endl;
         }
@@ -43,7 +43,7 @@ int main(int argc, char ** argv)
             std::string outfile_name = data2results(infile_name,".txt");
             FileDecoder d;
             d.Decode(infile_name, outfile_name);
-            std::cout << "Succesfully decoded " << infile_name << std::endl;
+            std::cout << "Successfully decoded " << infile_name << std::endl;
         } catch (...) {
             std::cerr << "Failed to decode "<< infile_name << std::endl;
         }
