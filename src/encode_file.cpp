@@ -65,6 +65,13 @@ void FileDecoder::Decode(const std::string infile, const std::string outfile) co
     {
         bit nextbit = reader.pull();
         currnode = nextbit ? currnode.lock()->Right : currnode.lock()->Left;
+
+        if(!currnode.lock())
+        {
+            std::cerr << "The decoded tree does not match the coded data. Are you sure this is a huf file?" << std::endl;
+            throw "Wrong encoding";
+        }
+
         if(currnode.lock()->Leaf)
         {
             const unsigned char c = currnode.lock()->Data.lock()->value;

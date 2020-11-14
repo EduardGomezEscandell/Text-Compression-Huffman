@@ -11,13 +11,7 @@ Alphabet::Alphabet()
 void Alphabet::ObtainFrequencies(std::string filename)
 {
     std::ifstream f;
-    f.open(filename);
-
-    if(f.bad())
-    {
-        std::cerr << "Input file " << filename <<" could not be accessed."<<std::endl;
-        throw "Could not open input file";
-    }
+    OPEN(f, filename);
 
     std::string line;
     int totalcount = 0;
