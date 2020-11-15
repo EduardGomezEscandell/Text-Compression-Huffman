@@ -1,5 +1,15 @@
 #include "file_encoder.h"
 
+FileEncoder::FileEncoder(const std::string & infile_name)
+{
+    // Reads the tree from the file.
+    mpAlphabet = Alphabet::New();
+    mpAlphabet->ObtainFrequencies(infile_name);
+    mpAlphabet->BuildTree();
+    mpAlphabet->BuildTable();
+}
+
+
 void FileEncoder::Encode(const std::string infile, const std::string outfile) const
 {
     std::ifstream fin;

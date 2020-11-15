@@ -10,6 +10,8 @@
 class FileEncoder
 {
 public:
+    FileEncoder();
+    FileEncoder(const std::string & infile_name);
     FileEncoder(Alphabet::Pointer & pAlphabet) : mpAlphabet(pAlphabet) {};
     FileEncoder(Alphabet & rAlphabet) : mpAlphabet(std::make_shared<Alphabet>(rAlphabet)) {};
     void Encode(const std::string infile, const std::string outfile) const;

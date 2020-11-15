@@ -29,12 +29,7 @@ int main(int argc, char ** argv)
         std::string outfile_name = ChangeExtension(infile_name,".huf");
         try
         {
-            Alphabet alph;
-            alph.ObtainFrequencies(infile_name);
-            alph.BuildTree();
-            alph.BuildTable();
-
-            FileEncoder e(alph);
+            FileEncoder e(infile_name);
             e.Encode(infile_name, tempfile_name);
             std::cout << "Successfully encoded " << infile_name << std::endl;
             std::rename(tempfile_name.c_str(), outfile_name.c_str());

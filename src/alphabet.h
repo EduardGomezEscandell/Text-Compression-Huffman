@@ -4,6 +4,7 @@
 #include <iostream>
 #include <sstream>
 #include <algorithm>
+#include <memory>
 
 #include "node.h"
 
@@ -26,6 +27,7 @@ class Alphabet
 {
 public:
     typedef std::shared_ptr<Alphabet> Pointer;
+    static Pointer New(){return std::make_shared<Alphabet>();}
     Alphabet();
 
     void Decode(BitReader & reader);
