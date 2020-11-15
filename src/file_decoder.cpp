@@ -1,13 +1,27 @@
 #include "file_decoder.h"
 
+FileDecoder::FileDecoder(const std::string & treefile_name)
+{
+    BitReader reader(treefile_name);
+    mpAlphabet->Decode(reader);
+}
+
 std::string FileDecoder::Decode(const std::string & infile, const std::string & outfile) const
 {
     std::ofstream fout;
-    OpenAndCheck(fout,outfile);
+    OpenAndCheck<std::ofstream>(fout,outfile);
     BitReader reader(infile);
 
     // Decoding alphabet
-    mpAlphabet->Decode(reader);
+    if(mpAlphabet->Empty())
+    {
+        try {
+            mpAlphabet->Decode(reader);
+        } catch (...) {
+            std::cerr<<"The file you provided contains no valid tree.";
+            std::cerr<<"This could be caused by the file being damaged or you might need an acompanying .hft file"<<std::endl;
+        }
+    }
 
     // Decoding filename
     std::stringstream ss;

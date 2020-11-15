@@ -7,6 +7,16 @@
 #include <string>
 #include <sstream>
 
+#define ERROR       0
+#define HELP        1
+#define ENCODE      2
+#define DECODE      3
+#define AUTO        4
+#define TREE        5
+#define SEPARATE    6
+#define COMBINED    7
+
+
 class WorkQueue
 {
 public:
@@ -14,11 +24,18 @@ public:
     static Pointer New(int argc, char ** argv){return std::make_shared<WorkQueue>(argc, argv);}
 
     WorkQueue(int argc, char ** argv);
-    bool NextEncoding(std::string & infile);
-    bool NextDecoding(std::string & outfile);
+    int PopEncoding(std::string & infile);
+    bool NextCombinedEncoding(std::string & infile);
+    bool PopDecoding(std::string & outfile);
+
+    bool self_code = true;
+    std::string tree_file;
 protected:
     std::list<std::string> files_to_encode;
+    std::list<std::string> files_to_encode_separated;
+    std::list<std::string> files_to_encode_combined;
     std::list<std::string> files_to_decode;
+    std::list<std::string>::iterator curr_comb_file;
 };
 
 #endif // INPUT_PARSING_H

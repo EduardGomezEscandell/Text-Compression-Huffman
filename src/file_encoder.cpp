@@ -4,22 +4,63 @@ FileEncoder::FileEncoder(const std::string & infile_name)
 {
     // Reads the tree from the file.
     mpAlphabet = Alphabet::New();
+    AddData(infile_name);
+    Build();
+}
+
+void FileEncoder::AddData(const std::string & infile_name)
+{
     mpAlphabet->ObtainFrequencies(infile_name);
+}
+
+void FileEncoder::Build()
+{
     mpAlphabet->BuildTree();
-    mpAlphabet->BuildTable();
 }
 
 
 void FileEncoder::Encode(const std::string infile, const std::string outfile) const
 {
     std::ifstream fin;
-    OpenAndCheck(fin,infile);
+    OpenAndCheck<std::ifstream>(fin,infile);
     BitWriter writer(outfile);
 
     // Encoding tree
 
-    mpAlphabet->GetRoot()->EncodeRecursive(writer);
+    WriteTree(writer);
+    EncodeData(infile, fin, writer);
+}
 
+void FileEncoder::WriteTree(const std::string & outfile) const
+{
+    BitWriter writer(outfile);
+    WriteTree(writer);
+}
+
+void FileEncoder::WriteTree(BitWriter & writer) const
+{
+    if(mpAlphabet->Empty())
+    {
+        throw "Attempting to store an empty tree";
+    }
+    if(!mpAlphabet->Built())
+    {
+        mpAlphabet->BuildTree();
+    }
+    mpAlphabet->GetRoot()->EncodeRecursive(writer);
+}
+
+void FileEncoder::EncodeData(const std::string infile, const std::string outfile) const
+{
+    std::ifstream fin;
+    OpenAndCheck<std::ifstream>(fin,infile);
+    BitWriter writer(outfile);
+    EncodeData(infile, fin, writer);
+}
+
+
+void FileEncoder::EncodeData(const std::string & infile, std::ifstream & fin, BitWriter & writer) const
+{
     // Encoding original filename
     for(const unsigned char & c : strip_path(infile))
     {
@@ -47,6 +88,7 @@ void FileEncoder::Encode(const std::string infile, const std::string outfile) co
     encode_and_print(writer, END_OF_TRANSMISSION);
     writer.fill_byte(0);
 }
+
 
 void FileEncoder::encode_and_print(BitWriter & writer, const unsigned char c) const
 {

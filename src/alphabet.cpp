@@ -33,6 +33,8 @@ void Alphabet::ObtainFrequencies(std::string filename)
         row++;
     }
     f.close();
+    empty = false;
+    built = false;
 }
 
 
@@ -48,6 +50,8 @@ void Alphabet::BuildTree()
         Q.push(new_node);
     }
     mRoot = Q.pop();
+    mRoot->BuildTableRecursive({});
+    built = true;
 }
 
 std::string Alphabet::PrintTable()
@@ -93,4 +97,6 @@ void Alphabet::Decode(BitReader & reader)
 {
     mRoot = std::make_shared<Node>();
     mRoot->DecodeRecursive(reader, mLetters);
+    empty = false;
+    built = true;
 }

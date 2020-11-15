@@ -6,11 +6,11 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_executable(huffcode
-        main.cpp
+        IO.cpp
         node.cpp
+        input_parsing.cpp
         alphabet.cpp
         file_encoder.cpp
         file_decoder.cpp
-        input_parsing.cpp
-        IO.cpp
+        main.cpp
         )

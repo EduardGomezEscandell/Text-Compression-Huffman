@@ -1,23 +1,12 @@
 # include "IO.h"
 
-void OpenAndCheck(std::ifstream & f, const std::string & filename)
+std::string ChangeExtension(const std::string & data, const std::string extension)
 {
-    f.open(filename);
-    if(!f.is_open())
-    {
-        std::cerr << "File " << filename <<" could not be accessed."<<std::endl;
-        throw "Could not open input file";
-    }
-}
-
-void OpenAndCheck(std::ofstream & f, const std::string & filename)
-{
-    f.open(filename);
-    if(!f.is_open())
-    {
-        std::cerr << "File " << filename <<" could not be accessed."<<std::endl;
-        throw "Could not open input file";
-    }
+    std::string ret = data;
+    size_t newlength = ret.find_last_of('.');
+    ret.resize(newlength);
+    ret += extension;
+    return ret;
 }
 
 size_t last_path_separator(std::string path)
@@ -54,7 +43,7 @@ std::string extract_path(const std::string & filename)
 }
 
 BitWriter::BitWriter(const std::string & outfile) {
-    OpenAndCheck(f,outfile);
+    OpenAndCheck<std::ofstream>(f, outfile);
 }
 
 BitWriter::~BitWriter()
@@ -104,7 +93,7 @@ void BitWriter::fill_byte(bool value)
 
 inline void BitWriter::flush()
 {
-    f << buffer;
+    *f << buffer;
     buffer = 0;
     bitcount = 0;
 }
@@ -134,7 +123,7 @@ void BitReader::buffer_next_byte()
         throw "Reached end of file";
     }
     char c;
-    if(!f.get(c)) eof=true;
+    if(!f->get(c)) eof=true;
     buffer = (uint8_t) c;
     bitcount = 0;
 }

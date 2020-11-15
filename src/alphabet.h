@@ -7,6 +7,7 @@
 #include <memory>
 
 #include "node.h"
+#include "IO.h"
 
 struct compare
 {
@@ -34,7 +35,6 @@ public:
 
     void ObtainFrequencies(std::string filename);
     void BuildTree();
-    void BuildTable() {mRoot->BuildTableRecursive({});}
 
     Node::Pointer & GetRoot() {return mRoot;}
 
@@ -42,9 +42,13 @@ public:
 
     std::string PrintTree() {return mRoot->PrintTreeRecursive({});}
     std::string PrintTable();
+    bool Built() {return built;}
+    bool Empty() {return empty;}
 protected:
+    bool built = false;
+    bool empty = true;
     std::array<Letter::Pointer, 256> mLetters;
-    Node::Pointer mRoot;
+    Node::Pointer mRoot = nullptr;
 };
 
 #endif // ALPHABET_H
