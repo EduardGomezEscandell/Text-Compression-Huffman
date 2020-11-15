@@ -26,13 +26,13 @@ Here is the result of running the test:
 ```
 ~/HuffmanCoding$ cd test
 ~/HuffmanCoding/test$ sh test.sh 
-Successfully encoded ~/HuffmanCoding/test/humanrights.txt
-Successfully decoded ~/HuffmanCoding/test/humanrights_copy.huf
+Successfully encoded ~/HuffmanCoding/test/testdata/humanrights.txt
+Successfully decoded ~/HuffmanCoding/test/humanrights.huf
 
 Difference between original and encoded-decoded (blank if none, ok):
 
 The original weights:   12557 bytes
-The compressed weights:  7274 bytes
+The compressed weights:  7287 bytes
 This represents a 41% reduction
 ```
 We can see how there is no difference between the original and the reconstructed version. We also see that the compressed version wheights a 59% of the original for this case in particular. Due to the overhead of storing the tree, efficiency improves for larger files.
