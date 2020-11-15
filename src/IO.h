@@ -46,6 +46,7 @@ public:
     uint8_t pullbyte();
     const int wordsize = 8;
 protected:
+    void buffer_next_byte();
     bool eof=false;
     std::ifstream f;
     short bitcount = WORDSIZE;

@@ -74,15 +74,23 @@ void BitWriter::push(const bit b)
 
 void BitWriter::push(const unsigned char ch)
 {
-    // TODO Replace with something more efficient
-    uint8_t mask = 1 << (WORDSIZE-1);
-    while(mask)
-    {
-        bit b = ch & mask;
-        push(b);
-        mask = mask >> 1;
-    }
+    /*
+     * Pushes 8 bits at once.
+     */
+    int old_bitcount = bitcount;
 
+    // Writing first half
+    buffer = buffer << (WORDSIZE - bitcount);
+    uint8_t firsthalf;
+    uint8_t mask = (~0) << bitcount;
+    firsthalf = ch & mask;
+    buffer |= firsthalf >> bitcount;
+    flush();
+
+    // Reading second half
+    bitcount = old_bitcount;
+    mask = ~mask;
+    buffer = ch & mask;
 }
 
 void BitWriter::fill_byte(bool value)
@@ -108,18 +116,8 @@ BitReader::BitReader(const std::string & infile)
 
 bit BitReader::pull()
 {
-
-    if(bitcount==WORDSIZE)
-    {
-        if(eof)
-        {
-            std::cerr<<"Reached end of file at an unexpeced point. Check you are decoding a valid file or that the file might be damaged."<<std::endl;
-            throw "Reached end of file";
-        }
-        char c;
-        if(!f.get(c)) eof=true;
-        buffer = (uint8_t) c;
-        bitcount = 0;
+    if(bitcount==WORDSIZE){
+        buffer_next_byte();
     }
 
     uint8_t mask = 1 << (WORDSIZE-1-bitcount);
@@ -128,19 +126,43 @@ bit BitReader::pull()
     return b;
 }
 
+void BitReader::buffer_next_byte()
+{
+    if(eof)
+    {
+        std::cerr<<"Reached end of file at an unexpeced point. Check you are decoding a valid file or that the file might be damaged."<<std::endl;
+        throw "Reached end of file";
+    }
+    char c;
+    if(!f.get(c)) eof=true;
+    buffer = (uint8_t) c;
+    bitcount = 0;
+}
+
 uint8_t BitReader::pullbyte()
 {
-    // TODO: Replace with something more efficient
-    uint8_t byte = 0;
+    /*
+     * Pulls the next 8 bits, disregarding what actual byte they belong to.
+     */
+    uint8_t mask;
+    int old_bitcount = bitcount;
 
+    // Reading first half
+    uint8_t firsthalf;
+    mask = ~0;
+    mask = mask >> bitcount;
+    firsthalf = buffer & mask;
+    firsthalf = firsthalf << bitcount;
 
+    // Reading second half
+    uint8_t secondhalf;
+    buffer_next_byte();
+    bitcount = old_bitcount;
+    mask = ~mask;
+    secondhalf = buffer & mask;
+    secondhalf = secondhalf >> (WORDSIZE -bitcount);
 
-    for(int i=0; i<WORDSIZE; i++)
-    {
-        byte = byte << 1;
-        byte |= pull();
-    }
-    return byte;
+    return firsthalf | secondhalf;
 }
 
 
