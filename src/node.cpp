@@ -86,7 +86,7 @@ std::ostream& operator<<(std::ostream & os, const Node & node)
     return os;
 }
 
-void Node::EncodeRecursive(bitstream::writer & writer) const
+void Node::EncodeRecursive(BitWriter & writer) const
 {
     writer.push(Leaf);
     if(Leaf)
@@ -106,7 +106,7 @@ void Node::EncodeRecursive(bitstream::writer & writer) const
     }
 }
 
-void Node::DecodeRecursive(bitstream::reader & reader, std::array<Letter::Pointer, 256> & letters)
+void Node::DecodeRecursive(BitReader & reader, std::array<Letter::Pointer, 256> & letters)
 {
     Leaf = reader.pull();
     if(Leaf)

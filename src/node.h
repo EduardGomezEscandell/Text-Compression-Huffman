@@ -7,7 +7,7 @@
 #include <set>
 #include <memory>
 
-#include "bit_level.h"
+#include "IO.h"
 
 class Letter{
 public:
@@ -40,8 +40,8 @@ public:
     bool Leaf = false;
     double Weight;
 
-    void EncodeRecursive(bitstream::writer & writer) const;
-    void DecodeRecursive(bitstream::reader & reader, std::array<Letter::Pointer, 256> & letters);
+    void EncodeRecursive(BitWriter & writer) const;
+    void DecodeRecursive(BitReader & reader, std::array<Letter::Pointer, 256> & letters);
 
     Node::Pointer Left = nullptr;
     Node::Pointer Right = nullptr;

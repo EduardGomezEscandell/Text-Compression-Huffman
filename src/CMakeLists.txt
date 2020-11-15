@@ -9,7 +9,8 @@ add_executable(huffcode
         main.cpp
         node.cpp
         alphabet.cpp
-        encode_file.cpp
+        file_encoder.cpp
+        file_decoder.cpp
         input_parsing.cpp
-        bit_level.h
+        IO.cpp
         )

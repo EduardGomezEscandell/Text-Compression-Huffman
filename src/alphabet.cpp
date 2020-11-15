@@ -11,7 +11,7 @@ Alphabet::Alphabet()
 void Alphabet::ObtainFrequencies(std::string filename)
 {
     std::ifstream f;
-    OPEN(f, filename);
+    OpenAndCheck(f, filename);
 
     std::string line;
     int totalcount = 0;
@@ -89,7 +89,7 @@ MyQueue::MyQueue(std::array<Letter::Pointer, 256> & letters)
     }
 }
 
-void Alphabet::Decode(bitstream::reader & reader)
+void Alphabet::Decode(BitReader & reader)
 {
     mRoot = std::make_shared<Node>();
     mRoot->DecodeRecursive(reader, mLetters);

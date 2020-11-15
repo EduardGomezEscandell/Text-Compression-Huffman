@@ -1,7 +1,8 @@
 #include <iostream>
 
 #include "alphabet.h"
-#include "encode_file.h"
+#include "file_encoder.h"
+#include "file_decoder.h"
 #include "input_parsing.h"
 
 #include <string>

@@ -28,7 +28,7 @@ public:
     typedef std::shared_ptr<Alphabet> Pointer;
     Alphabet();
 
-    void Decode(bitstream::reader & reader);
+    void Decode(BitReader & reader);
 
     void ObtainFrequencies(std::string filename);
     void BuildTree();
