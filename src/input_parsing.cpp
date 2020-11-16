@@ -21,7 +21,6 @@ WorkQueue::WorkQueue(int argc, char ** argv)
         if(op == ERROR) throw_wrong_input();
         if(op == HELP) print_help();
         if(op == SEPARATE) separate_files = true;
-        if(op == COMBINED) any_combined = true;
 
         ++currarg;
 
@@ -36,17 +35,6 @@ WorkQueue::WorkQueue(int argc, char ** argv)
             {
             case ENCODE:    files_to_encode.emplace_back(*currarg);             break;
             case DECODE:    files_to_decode.emplace_back(*currarg);             break;
-            case COMBINED:  files_to_encode_combined.emplace_back(*currarg);    break;
-            case TREE:
-                if(external_tree)
-                {
-                    std::cerr << "You can only provide a single tree file"<<std::endl;
-                    throw "Multiple tree files";
-                } else {
-                    external_tree = true;
-                    tree_file = *currarg;
-                }
-                break;
 
             default: std::cerr<<"File "<<*currarg<<" has no specified operation. Use -h for help."<<std::endl;
             }
@@ -54,10 +42,9 @@ WorkQueue::WorkQueue(int argc, char ** argv)
         }
     }
     if(noargs) throw_wrong_input();
-    curr_comb_file = files_to_encode_combined.begin();
 }
 
-int WorkQueue::PopEncoding(std::string & infile)
+bool WorkQueue::PopEncoding(std::string & infile)
 {
     if(!files_to_encode.empty())
     {
@@ -65,25 +52,7 @@ int WorkQueue::PopEncoding(std::string & infile)
         files_to_encode.pop_front();
         return ENCODE;
     }
-    if(!files_to_encode_combined.empty())
-    {
-        infile = files_to_encode_combined.front();
-        files_to_encode_combined.pop_front();
-        return COMBINED;
-    }
 
-    return false;
-}
-
-bool WorkQueue::NextCombinedEncoding(std::string & infile)
-{
-
-    if(curr_comb_file != files_to_encode_combined.end())
-    {
-        infile = std::string(*curr_comb_file);
-        curr_comb_file++;
-        return true;
-    }
     return false;
 }
 
@@ -107,11 +76,9 @@ int validate_operation(char * input)
     {
     case 'a':   return AUTO;
     case 'e':   return ENCODE;
-    case 'c':   return COMBINED;
     case 'd':   return DECODE;
     case 'h':   return HELP;
     case 's':   return SEPARATE;
-    case 't':   return TREE;
     default:    return ERROR;
     }
 }
@@ -127,16 +94,7 @@ inline std::string helpmsg()
     ss << "> huffman -a filename1.txt filename2.huf  ...        to automatically deduce operation on one or more files\n";
     ss << "\n";
     ss << "If you want to store the tree and the encoded data in separate files, you can use -s\n";
-    ss << "> huffman -s [-e|-d] filename1 filename2 ...         to operate on separate tree(hft) and data(huf) files\n";
-    ss << "\n";
-    ss << "If your want to use a single tree to encode multiple files, you can use -c\n";
-    ss << "> huffman -c filename1 filename2 ...                 to create a common tree.\n";
-    ss << "> huffman -c filename1 -c filename2 ...              does NOT group them up separately.\n";
-    ss << "\n";
-    ss << "If your want to use a single tree provided from disk, you can use -t\n";
-    ss << "> huffman -t treefile [-e|-d|-a] filenames           to operate with a provided tree.\n";
-    ss << "> huffman -t treefile -s [-e|-a] filenames           will avoid storing the tree agin inside the files.\n";
-    ss << "> huffman -t treefile [-c] filenames                 is redundant and will do the same as [-e].\n";
+    ss << "> huffman -s [-e|-d|-a] filename1 filename2 ...      to operate on separate tree(hft) and data(huf) files\n";
     ss << "\n";
     ss << "EXAMPLE using our sample file\n";
     ss << "> cp tests/humanrights.txt .\n> huffman -e humanrights.txt"<<std::endl;
@@ -167,6 +125,5 @@ int auto_get_op(char * input)
         extension += *ch;
     }
     if(extension == ".huf") return DECODE;
-    if(extension == ".hft") return TREE;
     return ENCODE;
 }

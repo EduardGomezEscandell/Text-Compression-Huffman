@@ -12,9 +12,7 @@
 #define ENCODE      2
 #define DECODE      3
 #define AUTO        4
-#define TREE        5
-#define SEPARATE    6
-#define COMBINED    7
+#define SEPARATE    5
 
 
 class WorkQueue
@@ -24,19 +22,13 @@ public:
     static Pointer New(int argc, char ** argv){return std::make_shared<WorkQueue>(argc, argv);}
 
     WorkQueue(int argc, char ** argv);
-    int PopEncoding(std::string & infile);
-    bool NextCombinedEncoding(std::string & infile);
+    bool PopEncoding(std::string & infile);
     bool PopDecoding(std::string & outfile);
 
-    bool external_tree = false;
     bool separate_files = false;
-    bool any_combined = false;
-    std::string tree_file;
 protected:
     std::list<std::string> files_to_encode;
-    std::list<std::string> files_to_encode_combined;
     std::list<std::string> files_to_decode;
-    std::list<std::string>::iterator curr_comb_file;
 };
 
 #endif // INPUT_PARSING_H

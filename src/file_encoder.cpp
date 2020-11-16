@@ -41,7 +41,7 @@ void FileEncoder::WriteTree(const std::string & outfile) const
 
 void FileEncoder::WriteTree(BitWriter & writer) const
 {
-    if(mpAlphabet->Empty())
+    if(!mpAlphabet || mpAlphabet->Empty())
     {
         throw "Attempting to store an empty tree";
     }
