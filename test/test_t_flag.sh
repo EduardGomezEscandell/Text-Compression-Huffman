@@ -15,7 +15,7 @@ DECODED="$TESTS_DIR/humanrights.txt"
 
 # Running program
 cd ..
-./huffcode -t "$TREE" -e "$TESTFILE"
+./huffcode -t "$TREE" -s -e "$TESTFILE"
 mv "$ENCODED" "$NEWENCODED"
 ./huffcode -t "$TREE" -d "$NEWENCODED"
 

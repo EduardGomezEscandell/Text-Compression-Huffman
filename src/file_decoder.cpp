@@ -3,6 +3,7 @@
 FileDecoder::FileDecoder(const std::string & treefile_name)
 {
     BitReader reader(treefile_name);
+    mpAlphabet = Alphabet::New();
     mpAlphabet->Decode(reader);
 }
 
@@ -30,14 +31,14 @@ std::string FileDecoder::Decode(const std::string & infile, const std::string & 
     }
 
     // Decoding filename
-    std::stringstream ss;
+    std::string original_filename = "";
     while(true)
     {
         unsigned char c = decode_next_char(reader);
         if(c == END_OF_TRANSMISSION) break;
-        ss << c;
+        original_filename += c;
     }
-    std::string decoded_name = extract_path(infile) + ss.str();
+    std::string decoded_name = extract_path(infile) + original_filename;
 
     // Decoding data
     while(true)

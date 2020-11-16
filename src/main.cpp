@@ -95,7 +95,7 @@ int main(int argc, char ** argv)
             }
 
             std::cout << "Successfully encoded " << infile_name << std::endl;
-            if(wq->external_tree || wq->separate_files)
+            if(!wq->external_tree && wq->separate_files)
             {
                 std::rename(treefile_name_tmp.c_str(), treefile_name.c_str());
             }
@@ -124,7 +124,7 @@ int main(int argc, char ** argv)
 
         std::string treefile_name;
 
-        if(wq->separate_files){
+        if(wq->separate_files && !wq->external_tree){
             treefile_name = ChangeExtension(infile_name,".hft");
         }
 
