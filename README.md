@@ -14,12 +14,12 @@ So far the program:
 - Builds a huffmann tree
 - Encodes a text and stores it together with the tree
 - Reads the encoded file and recovers the original text
+- Store tree and data separately, and recover it later.
 
 The program doesn't yet:
 - Encode multiple files with the same tree.
 - Use a snippet of text to build the tree instead of the whole text.
 - Allow for non-ASCII characters.
-- Store trees separately.
 
 ## Results
 Here is the result of running the test:
