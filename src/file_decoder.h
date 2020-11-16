@@ -16,6 +16,9 @@ public:
     FileDecoder(const std::string & treefile_name);
     FileDecoder(Alphabet::Pointer & pAlphabet) : mpAlphabet(pAlphabet) {}
     FileDecoder(Alphabet & rAlphabet) : mpAlphabet(std::make_shared<Alphabet>(rAlphabet)) {}
+
+    void ReadTree(const std::string & treefile_name);
+
     std::string Decode(const std::string & infile, const std::string & outfile) const;
 protected:
     unsigned char decode_next_char(BitReader & reader) const;

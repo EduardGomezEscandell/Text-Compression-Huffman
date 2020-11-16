@@ -6,6 +6,12 @@ FileDecoder::FileDecoder(const std::string & treefile_name)
     mpAlphabet->Decode(reader);
 }
 
+void FileDecoder::ReadTree(const std::string & treefile_name)
+{
+    BitReader reader(treefile_name);
+    mpAlphabet->Decode(reader);
+}
+
 std::string FileDecoder::Decode(const std::string & infile, const std::string & outfile) const
 {
     std::ofstream fout;

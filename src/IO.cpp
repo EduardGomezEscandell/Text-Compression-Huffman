@@ -82,13 +82,14 @@ void BitWriter::push(const unsigned char ch)
     buffer = ch & mask;
 }
 
-void BitWriter::fill_byte(bool value)
+void BitWriter::eof()
 {
     // Pushing zeros until it flushes
     while (bitcount > 0)
     {
-        push(value);
+        push(false);
     }
+    f->close();
 }
 
 inline void BitWriter::flush()

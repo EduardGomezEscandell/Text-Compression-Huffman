@@ -20,6 +20,8 @@ WorkQueue::WorkQueue(int argc, char ** argv)
         int op = validate_operation(*currarg);
         if(op == ERROR) throw_wrong_input();
         if(op == HELP) print_help();
+        if(op == SEPARATE) separate_files = true;
+        if(op == COMBINED) any_combined = true;
 
         ++currarg;
 
@@ -34,19 +36,19 @@ WorkQueue::WorkQueue(int argc, char ** argv)
             {
             case ENCODE:    files_to_encode.emplace_back(*currarg);             break;
             case DECODE:    files_to_decode.emplace_back(*currarg);             break;
-            case SEPARATE:  files_to_encode_separated.emplace_back(*currarg);   break;
             case COMBINED:  files_to_encode_combined.emplace_back(*currarg);    break;
             case TREE:
-                if(!self_code)
+                if(external_tree)
                 {
                     std::cerr << "You can only provide a single tree file"<<std::endl;
                     throw "Multiple tree files";
                 } else {
-                    self_code = false;
+                    external_tree = true;
                     tree_file = *currarg;
                 }
+                break;
 
-            default: std::cerr<<"File "<<*currarg<<" has no specified operation"<<std::endl;
+            default: std::cerr<<"File "<<*currarg<<" has no specified operation. Use -h for help."<<std::endl;
             }
             ++currarg;
         }
@@ -69,12 +71,7 @@ int WorkQueue::PopEncoding(std::string & infile)
         files_to_encode_combined.pop_front();
         return COMBINED;
     }
-    if(!files_to_encode_separated.empty())
-    {
-        infile = files_to_encode_separated.front();
-        files_to_encode_separated.pop_front();
-        return SEPARATE;
-    }
+
     return false;
 }
 

@@ -27,7 +27,7 @@ public:
     void close() {f->close();}
     void push(const bit b);
     void push(const unsigned char ch);
-    void fill_byte(bool value);
+    void eof();
 protected:
     inline void flush();
     std::shared_ptr<std::ofstream> f;

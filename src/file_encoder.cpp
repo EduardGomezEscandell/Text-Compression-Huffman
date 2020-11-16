@@ -29,12 +29,14 @@ void FileEncoder::Encode(const std::string infile, const std::string outfile) co
 
     WriteTree(writer);
     EncodeData(infile, fin, writer);
+    writer.eof();
 }
 
 void FileEncoder::WriteTree(const std::string & outfile) const
 {
     BitWriter writer(outfile);
     WriteTree(writer);
+    writer.eof();
 }
 
 void FileEncoder::WriteTree(BitWriter & writer) const
@@ -56,6 +58,7 @@ void FileEncoder::EncodeData(const std::string infile, const std::string outfile
     OpenAndCheck<std::ifstream>(fin,infile);
     BitWriter writer(outfile);
     EncodeData(infile, fin, writer);
+    writer.eof();
 }
 
 
@@ -86,7 +89,6 @@ void FileEncoder::EncodeData(const std::string & infile, std::ifstream & fin, Bi
     }
     // Writting an End Of Transmission char at the end
     encode_and_print(writer, END_OF_TRANSMISSION);
-    writer.fill_byte(0);
 }
 
 

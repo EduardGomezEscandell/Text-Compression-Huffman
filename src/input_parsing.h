@@ -28,11 +28,12 @@ public:
     bool NextCombinedEncoding(std::string & infile);
     bool PopDecoding(std::string & outfile);
 
-    bool self_code = true;
+    bool external_tree = false;
+    bool separate_files = false;
+    bool any_combined = false;
     std::string tree_file;
 protected:
     std::list<std::string> files_to_encode;
-    std::list<std::string> files_to_encode_separated;
     std::list<std::string> files_to_encode_combined;
     std::list<std::string> files_to_decode;
     std::list<std::string>::iterator curr_comb_file;
