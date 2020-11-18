@@ -6,29 +6,29 @@ Implementation of Huffman coding as a recreational project. Huffman coding is we
 - Each characters' code is its adress in the tree.
 - More frequent characters are higher up in the tree, therefore have shorter codes.
 
-In ASCII each letter takes 8 bits. Once encoded, the most frequent characters take 4 bits while the least ones take 27. Note that most of the latter will be control characters that seldom, if ever, appear.
+In ASCII each letter takes 8 bits. Once encoded, the most frequent characters take 4 bits while the least ones take 27. Note that most of the latter will be control characters that seldom, if ever, appear. This amounts can be reduced if we only build the tree with the subset of characters present in the file.
 
 ## Features
 The program can:
-- Encode a text and store it together with the tree
-- Reads the encoded file and recover the original text
+- Encode a text and store it together with the tree.
+- Reads the encoded file and recover the original text.
 - Store tree and data separately, and recover it later.
 
 ## Results
 Here is the result of running the test:
 ```
-~/HuffmanCoding$ cd test
-~/HuffmanCoding/test$ sh test.sh 
-Successfully encoded ~/HuffmanCoding/test/testdata/humanrights.txt
-Successfully decoded ~/HuffmanCoding/test/humanrights.huf
+Successfully encoded /home/eduard/Code/HuffmanCoding/test/testdata/humanrights.txt
+Successfully decoded /home/eduard/Code/HuffmanCoding/test/humanrights.huf
 
 Difference between original and encoded-decoded (blank if none, ok):
 
-The original weights:   12557 bytes
-The compressed weights:  7287 bytes
-This represents a 41% reduction
+The original weights:   11253 bytes
+The compressed weights:  6264 bytes
+This represents a 44% reduction
+
+Results files removed
 ```
-We can see how there is no difference between the original and the reconstructed version. We also see that the compressed version wheights a 59% of the original for this case in particular. Due to the overhead of storing the tree, efficiency improves for larger files.
+We can see how there is no difference between the original and the reconstructed version. We also see that the compressed version wheights a 56% of the original for this case in particular.
 
 ## How to use
 First clone the repository and, on linux, run `sh build.sh`. On windows you're on your own but it is a small project so it shouldn't be difficult.
