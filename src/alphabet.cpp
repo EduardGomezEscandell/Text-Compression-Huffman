@@ -18,9 +18,12 @@ void Alphabet::ObtainFrequencies(std::string filename)
     int row = 1;
     while(getline(f, line))
     {
+        if(!f.eof())  line += '\n';
+
         int col = 1;
         for(unsigned char c: line)
         {
+
             if(uint8_t(c) > 255 || uint8_t(c) < 0)
             {
                 std::cerr<<"Only ascii characters allowed! Character "<< c <<" ("<<(uint8_t)c<<") will be ignored. See R"<<row<<"C"<<col<<std::endl;
@@ -40,6 +43,11 @@ void Alphabet::ObtainFrequencies(std::string filename)
 
 void Alphabet::BuildTree()
 {
+    if(mLetters[END_OF_TRANSMISSION]->count == 0)
+    {
+        mLetters[END_OF_TRANSMISSION]->count = 1;
+    }
+
     MyQueue Q(mLetters);
 
     while(Q.size() > 1)
@@ -89,7 +97,10 @@ MyQueue::MyQueue(std::array<Letter::Pointer, 256> & letters)
 {
     for(auto & letter_ptr : letters)
     {
-        Q.insert(std::make_shared<Node>(letter_ptr));
+        if(letter_ptr->count > 0)
+        {
+            Q.insert(std::make_shared<Node>(letter_ptr));
+        }
     }
 }
 
