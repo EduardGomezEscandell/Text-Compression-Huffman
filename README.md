@@ -6,20 +6,13 @@ Implementation of Huffman coding as a recreational project. Huffman coding is we
 - Each characters' code is its adress in the tree.
 - More frequent characters are higher up in the tree, therefore have shorter codes.
 
-In ASCII each letter takes 8 bits. Once encoded, the most frequent characters take 4 bits while the least ones take 27. Note that most of the latter will be control characters that seldom, if ever, appear. The set of characters can be restricted to make it more efficient. The tree can be constructed on a per-file basis or use generic precompiled values, e.g. the optimal for the english language.
+In ASCII each letter takes 8 bits. Once encoded, the most frequent characters take 4 bits while the least ones take 27. Note that most of the latter will be control characters that seldom, if ever, appear.
 
-## Progress report
-So far the program:
-- Reads a file and counts the frequency of each ASCII character
-- Builds a huffmann tree
-- Encodes a text and stores it together with the tree
-- Reads the encoded file and recovers the original text
+## Features
+The program can:
+- Encode a text and store it together with the tree
+- Reads the encoded file and recover the original text
 - Store tree and data separately, and recover it later.
-
-The program doesn't yet:
-- Encode multiple files with the same tree.
-- Use a snippet of text to build the tree instead of the whole text.
-- Allow for non-ASCII characters.
 
 ## Results
 Here is the result of running the test:
@@ -49,8 +42,7 @@ If you want to test the build, you can run tests yourself, by doing:
 ```
 You can run different files by putting them in the `test/testdata` directory and modifying the first few lines of `test.sh`.
 
-## How is data encoded?
-A huffman tree is generated. This is a binary tree with letters at the edges. 
+## How is data stored ?
 
 ### The pattern for the tree
 To store the tree we store the information in differently-sized groups of bits. These are all appended one after the other without caring about where byte division is, in a continuous stream of bits. The pattern for the tree is:
@@ -74,6 +66,12 @@ The data is written also as a stream of bits:
 This is preformed twice, for the filename and for the data. Therefore the resulting binary contains
 
 `<tree> <original filename> \EOT <contents> \EOT <trailing bits>`
+
+## Potential improvements
+Some possible features would be:
+- Encoding/decoding multiple files with the same tree.
+- Building a tree based on a snippet of text instead of the whole file.
+- Restricting the character set to that of the file so as to make the tree smaller and therefore more efficient.
 
 ## Disclaimer
 This code is for recreational purposes so by no means should you use it for any sensitive purpose. There is no garantee against data loss or any other such issue.
