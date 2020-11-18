@@ -11,14 +11,14 @@ In ASCII each letter takes 8 bits. Once encoded, the most frequent characters ta
 ## Features
 The program can:
 - Encode a text and store it together with the tree.
-- Reads the encoded file and recover the original text.
+- Read the encoded file and recover the original text.
 - Store tree and data separately, and recover it later.
 
 ## Results
 Here is the result of running the test:
 ```
-Successfully encoded /home/eduard/Code/HuffmanCoding/test/testdata/humanrights.txt
-Successfully decoded /home/eduard/Code/HuffmanCoding/test/humanrights.huf
+Successfully encoded HuffmanCoding/test/testdata/humanrights.txt
+Successfully decoded HuffmanCoding/test/humanrights.huf
 
 Difference between original and encoded-decoded (blank if none, ok):
 
